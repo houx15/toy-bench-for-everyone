@@ -4,6 +4,8 @@ Typical flow:
   scorer validate my-kit
   scorer run my-kit -m openrouter:<model> -m app:ChatGPT -j openrouter:<judge>
   scorer resume results/<run>          # after pasting app responses; repeat until done
+  scorer exam my-kit -o EXAM.md        # or: one file for chat apps, then
+  scorer ingest results/<run> reply.md -m app:Grok -r 1
   scorer sheet results/<run> -r paper-digest   # blind sample for you to grade
   scorer calibrate my-kit/calibration/<sheet>/sheet.yaml
   scorer report results/<run>
@@ -103,6 +105,29 @@ def cmd_calibrate(a) -> None:
             print(f"  {c}: {r['metric']}={r['value']} (n={r['n']}, threshold {r['threshold']}) -> {r['status']}")
 
 
+def cmd_exam(a) -> None:
+    from scorer_kit.exam import write_exam
+
+    kit = load_kit(a.kit)
+    out = write_exam(kit, Path(a.out), a.tasks.split(",") if a.tasks else None)
+    print(f"exam (no gold material): {out}\n"
+          "give it to each app model in a new, temporary chat — one chat per repeat")
+
+
+def cmd_ingest(a) -> None:
+    from scorer_kit.exam import ingest_answers
+    from scorer_kit.runner.run import Run
+
+    run = Run.load(a.run)
+    r = ingest_answers(run, a.model, a.repeat, Path(a.answers).read_text(encoding="utf-8"), a.force)
+    print(f"filed {len(r['filed'])} answers for {a.model} repeat {a.repeat}")
+    for s in r["skipped"]:
+        print(f"  skipped: {s}")
+    if r["missing"]:
+        print(f"  no answer found for: {', '.join(r['missing'])}")
+    _advance(run, 8)
+
+
 def cmd_init(a) -> None:
     dest = Path(a.dest)
     if dest.exists():
@@ -163,6 +188,20 @@ def main(argv: list[str] | None = None) -> None:
     s = sub.add_parser("calibrate", help="score a filled-in sheet: judge-user agreement")
     s.add_argument("sheet")
     s.set_defaults(fn=cmd_calibrate)
+
+    s = sub.add_parser("exam", help="write EXAM.md: every task prompt, no gold, for chat apps")
+    s.add_argument("kit")
+    s.add_argument("-o", "--out", default="EXAM.md")
+    s.add_argument("--tasks", help="comma-separated task ids (default: all)")
+    s.set_defaults(fn=cmd_exam)
+
+    s = sub.add_parser("ingest", help="file an app's reply to EXAM.md into a run")
+    s.add_argument("run")
+    s.add_argument("answers", help="text file with the app's full reply")
+    s.add_argument("-m", "--model", required=True, help="the app: model it came from")
+    s.add_argument("-r", "--repeat", type=int, required=True)
+    s.add_argument("--force", action="store_true", help="replace answers already filed")
+    s.set_defaults(fn=cmd_ingest)
 
     s = sub.add_parser("init", help="create a kit folder from the demo kit")
     s.add_argument("dest", nargs="?", default="my-kit")
