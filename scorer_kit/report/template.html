@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your AI Team</title>
+<style>
+:root {
+  color-scheme: light;
+  --surface: #fcfcfb;
+  --surface-2: #f3f2ef;
+  --border: #e2e0da;
+  --grid: #d9d7d0;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #7a7973;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --good: #0f7b3e;
+  --warn: #9a6200;
+  --bad: #b3261e;
+  --link: #1c5cab;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface: #1a1a19; --surface-2: #242422; --border: #3a3a37; --grid: #44443f;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #96958c;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+    --good: #5cc58a; --warn: #e5b04a; --bad: #f07a72; --link: #86b6ef;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface: #1a1a19; --surface-2: #242422; --border: #3a3a37; --grid: #44443f;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #96958c;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
+  --good: #5cc58a; --warn: #e5b04a; --bad: #f07a72; --link: #86b6ef;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--surface); color: var(--text-primary);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+}
+main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+a { color: var(--link); }
+h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 20px; margin: 48px 0 12px; }
+h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); margin: 20px 0 8px; font-weight: 600; }
+.sub { color: var(--text-secondary); margin: 0; }
+.banner { border: 1px solid var(--border); border-left: 4px solid var(--warn); background: var(--surface-2); padding: 10px 14px; border-radius: 6px; margin: 20px 0; font-size: 14px; }
+.card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 20px 0; }
+.persona { display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap; }
+.swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 6px; }
+.model-name { font-size: 22px; font-weight: 700; }
+.role { font-size: 15px; font-weight: 600; padding: 2px 10px; border: 1px solid var(--border); border-radius: 999px; }
+.tagline { color: var(--text-secondary); margin: 6px 0 0; }
+.evidence { color: var(--text-muted); font-size: 13px; margin: 4px 0 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+@media (max-width: 680px) { .grid2 { grid-template-columns: 1fr; } }
+.fit { font-size: 44px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.fit small { font-size: 16px; color: var(--text-muted); font-weight: 500; }
+.radar { width: 100%; max-width: 420px; display: block; }
+.radar .grid { fill: none; stroke: var(--grid); stroke-width: 1; }
+.radar .axis-label { fill: var(--text-secondary); font-size: 11px; }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary); flex-wrap: wrap; }
+.bars .row { display: grid; grid-template-columns: 120px 1fr 44px; gap: 8px; align-items: center; font-size: 13px; margin: 4px 0; }
+.bars .track { background: var(--surface-2); border-radius: 4px; height: 10px; }
+.bars .fill { height: 10px; border-radius: 4px; }
+ul.tags { list-style: none; padding: 0; margin: 0; display: flex; gap: 6px; flex-wrap: wrap; }
+ul.tags li { border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; font-size: 13px; }
+.good { color: var(--good); } .bad { color: var(--bad); } .warn { color: var(--warn); }
+.reel { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 680px) { .reel { grid-template-columns: 1fr; } }
+.reel blockquote { margin: 0; padding: 10px 12px; background: var(--surface-2); border-radius: 8px; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 220px; overflow: auto; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 680px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+.stat .v { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: 12px; color: var(--text-muted); }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+td.num { font-variant-numeric: tabular-nums; }
+.flags { color: var(--warn); font-size: 12px; }
+footer { margin-top: 48px; color: var(--text-muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Your AI team</h1>
+  <p class="sub">Run <strong>{{ run.run_id }}</strong>{% if profile.owner %} · kit of {{ profile.owner }}{% endif %} ·
+    {{ run.models|length }} models · {{ tasks|length }} tasks × {{ run.repeats }} repeats ·
+    judged by {{ run.judges|join(", ") if run.judges else "automatic checks only" }}</p>
+
+  {% set untrusted = [] %}
+  {% for r, crit in trust.items() %}{% for c, s in crit.items() %}{% if s != "trusted" %}{% set _ = untrusted.append(r ~ " / " ~ c ~ " (" ~ s ~ ")") %}{% endif %}{% endfor %}{% endfor %}
+  {% if untrusted %}
+  <div class="banner"><strong>Judge not yet calibrated</strong> for: {{ untrusted|join(", ") }}.
+    Treat those scores as provisional until you grade a blind sample (<code>scorer calibrate</code>) and agreement clears the threshold.</div>
+  {% endif %}
+
+  {% for m in models %}
+  <section class="card" id="{{ m.label }}">
+    <div class="persona">
+      <span class="model-name"><span class="swatch" style="background: {{ m.color }}"></span>{{ m.label }}</span>
+      <span class="role">{{ m.persona.role }}</span>
+    </div>
+    <p class="tagline">{{ m.persona.tagline }}</p>
+    {% if m.persona.evidence_recipe %}
+    <p class="evidence">Evidence: {{ m.persona.evidence_recipe }} scores {{ m.recipe_scores[m.persona.evidence_recipe]|pct }}
+      vs field average — a {{ (m.persona.strength * 100)|round(0)|int }}-point relative strength. See the task table below.</p>
+    {% endif %}
+
+    <div class="grid2">
+      <div>
+        <h3>Fit for your usage</h3>
+        <div class="fit">{{ m.fit|pct }}<small> / 100</small></div>
+        <p class="evidence">Weighted by your usage mix; tested buckets cover {{ m.coverage|pct }}% of your usage.</p>
+
+        <h3>Use for</h3>
+        {% if m.use_for %}<ul class="tags">{% for b in m.use_for %}<li class="good">{{ b }}</li>{% endfor %}</ul>
+        {% else %}<p class="evidence">No bucket where it clearly beats every other model.</p>{% endif %}
+        <h3>Don't use for</h3>
+        {% if m.avoid_for %}<ul class="tags">{% for b in m.avoid_for %}<li class="bad">{{ b }}</li>{% endfor %}</ul>
+        {% else %}<p class="evidence">No bucket where it clearly trails every other model.</p>{% endif %}
+      </div>
+      <div>
+        <h3>By bucket{% if favorite and favorite is not sameas m %} — vs {{ favorite.label }}{% endif %}</h3>
+        {% if m.radar %}
+          {{ m.radar|safe }}
+        {% else %}
+          <div class="bars">
+          {% for name, series in m.bars %}
+            {% for label, color, v in series %}
+            <div class="row" title="{{ label }} — {{ name }}: {{ v|num }}">
+              <span>{% if loop.first %}{{ name }}{% endif %}</span>
+              <div class="track"><div class="fill" style="width: {{ (v or 0) * 100 }}%; background: {{ color }}"></div></div>
+              <span class="num">{{ v|pct }}</span>
+            </div>
+            {% endfor %}
+          {% endfor %}
+          </div>
+        {% endif %}
+        {% if favorite and favorite is not sameas m %}
+        <div class="legend"><span><span class="swatch" style="background: {{ favorite.color }}"></span>{{ favorite.label }} (current favorite)</span>
+          <span><span class="swatch" style="background: {{ m.color }}"></span>{{ m.label }}</span></div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if m.best %}
+    <h3>Highlight reel</h3>
+    <div class="reel">
+      <div>
+        <p class="evidence"><span class="good">Best</span> · {{ m.best.task_id }} r{{ m.best.repeat }} · score {{ m.best.score|pct }} ·
+          <a href="{{ m.best.output_href }}">output</a> · <a href="{{ m.best.grade_href }}">grade</a></p>
+        <blockquote>{{ m.best_excerpt }}</blockquote>
+      </div>
+      <div>
+        <p class="evidence"><span class="bad">Worst</span> · {{ m.worst.task_id }} r{{ m.worst.repeat }} · score {{ m.worst.score|pct }} ·
+          <a href="{{ m.worst.output_href }}">output</a> · <a href="{{ m.worst.grade_href }}">grade</a></p>
+        <blockquote>{{ m.worst_excerpt }}</blockquote>
+      </div>
+    </div>
+    {% endif %}
+
+    <h3>Cost, speed, consistency</h3>
+    <div class="stats">
+      <div class="stat"><div class="v">{{ m.cost_total|money }}</div><div class="k">total cost{% if m.cost_total is none %} (not reported){% endif %}</div></div>
+      <div class="stat"><div class="v">{{ m.latency_mean|num(1) }}s</div><div class="k">mean latency</div></div>
+      <div class="stat"><div class="v">±{{ m.consistency|pct }}</div><div class="k">score spread across repeats</div></div>
+      <div class="stat"><div class="v">{{ m.errors }}</div><div class="k">failed calls</div></div>
+    </div>
+  </section>
+  {% endfor %}
+
+  <h2>Team roster</h2>
+  <p class="sub">Who to route each kind of work to, based on this run.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Bucket</th><th>Your usage</th><th>Assign to</th><th>Score</th><th>Lead</th></tr></thead>
+    <tbody>
+    {% for row in roster %}
+      <tr><td>{{ row.bucket.name }}</td><td class="num">{{ row.bucket.usage_share|pct }}%</td>
+        <td><span class="swatch" style="background: {{ row.model.color }}"></span>{{ row.model.label }} <span class="evidence">({{ row.model.persona.role }})</span></td>
+        <td class="num">{{ row.score|pct }}</td>
+        <td class="num">{% if row.margin is none %}—{% elif row.close_call %}<span class="warn">+{{ row.margin|pct }} · close call</span>{% else %}+{{ row.margin|pct }}{% endif %}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+
+  <h2>Task-level evidence</h2>
+  <p class="sub">Every score above is built from these. Scores are 0–100; each repeat links to its output and grade.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Task</th><th>Bucket</th>{% for m in models %}<th>{{ m.label }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for t in tasks %}
+      <tr><td>{{ t.title or t.id }}<div class="evidence">{{ t.recipe }}</div></td><td>{{ profile.bucket(t.bucket).name }}</td>
+      {% for m in models %}
+        <td class="num">{{ m.task_scores.get(t.id)|pct }}{% if t.id in m.task_spread %} <span class="evidence">±{{ m.task_spread[t.id]|pct }}</span>{% endif %}
+          <div class="evidence">{% for c in m.cells if c.task_id == t.id %}<a href="{{ c.output_href }}">r{{ c.repeat }}</a> <a href="{{ c.grade_href }}">({{ c.score|pct }})</a>{% if c.flags %}<span class="flags" title="{{ c.flags|join(', ') }}">⚑</span>{% endif %} {% endfor %}</div></td>
+      {% endfor %}</tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+
+  <footer>
+    Scores are relative to your own tasks and gold answers, not a public leaderboard.
+    Personas compare models against each other within this run. A model never grades its own outputs.
+    Novelty in brainstorming is measured against the other models' ideas, so it changes with who is in the run.
+  </footer>
+</main>
+</body>
+</html>
