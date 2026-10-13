@@ -1,0 +1,14 @@
+# Personal data — never committed by default
+my-kit/
+results/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+.DS_Store
