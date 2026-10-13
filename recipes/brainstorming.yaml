@@ -1,0 +1,79 @@
+id: brainstorming
+name: Brainstorming
+description: >
+  Taste-heavy. Novel compared with what other models (and the obvious baseline) come up
+  with, spread across genuinely different directions, and useful for the user's goal.
+grader: brainstorming
+
+response_format: |
+  Return the ideas as a numbered list, one idea per line: a short title, a colon, then
+  one sentence on what it is. No preamble.
+
+criteria:
+  - id: novelty
+    name: Novelty vs baseline pool
+    weight: 0.30
+    source: auto
+    description: >
+      Mean distance of each idea from its nearest neighbour in the baseline pool (static
+      baseline ideas + other models' ideas for the same task). Relative within a run.
+    scale: {kind: numeric, min: 0, max: 1}
+  - id: diversity
+    name: Distinct directions
+    weight: 0.20
+    source: auto
+    description: Number of idea clusters divided by the number of ideas asked for.
+    scale: {kind: numeric, min: 0, max: 1}
+  - id: usefulness
+    name: Usefulness for the goal
+    weight: 0.40
+    source: judge
+    description: Judge proxy for the user's own rating; trust it only after calibration.
+    scale:
+      kind: ordinal
+      min: 1
+      max: 3
+      anchors:
+        "1": Mostly generic or off-goal; you would not act on any of them.
+        "2": A few ideas you might act on, but most are obvious or vague.
+        "3": Several ideas you would actually try, specific enough to start tomorrow.
+  - id: count
+    name: Delivered the number asked for
+    weight: 0.10
+    source: auto
+    scale: {kind: numeric, min: 0, max: 1}
+
+automatic_checks:
+  count: ideas parsed from a numbered/bulleted list vs target_count
+  novelty: character-trigram distance from the baseline pool (leave-one-out over models)
+  diversity: greedy clustering at cluster_threshold
+
+params:
+  cluster_threshold: 0.5
+
+judge:
+  system: >
+    You are the user's sharp, practical collaborator rating a list of ideas another AI
+    produced for them. Judge usefulness for their stated goal, not cleverness. Reply with
+    JSON only.
+  prompt: |
+    # What the user asked
+    {{request}}
+
+    # What a useful idea achieves for them
+    {{goal}}
+
+    # The idea list
+    {{output}}
+
+    # Your task
+    Rate the list's usefulness on this scale:
+    {{usefulness_anchors}}
+
+    Reply with exactly this JSON shape:
+    {"usefulness": 2, "best_idea": 3, "reason": "one sentence"}
+
+calibration:
+  sample_size: 20
+  min_kappa: 0.6
+  min_correlation: 0.6

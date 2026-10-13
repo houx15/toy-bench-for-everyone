@@ -1,0 +1,105 @@
+id: paper-digest
+name: Paper digest
+description: >
+  Fact-heavy. Did the model get the claims you care about, answer your prewritten
+  why/limitations questions, raise good questions of its own, and avoid inventing things?
+grader: paper_digest
+
+response_format: |
+  Structure your answer with these headings:
+  ## Summary
+  ## Key claims
+  ## Answers
+  ## Questions I would raise
+
+criteria:
+  - id: claim_coverage
+    name: Gold claim coverage
+    weight: 0.35
+    source: judge
+    description: Share of the user's 10-15 gold claims the digest states (partial = half).
+    scale: {kind: numeric, min: 0, max: 1}
+  - id: answers
+    name: Answers to prewritten questions
+    weight: 0.25
+    source: judge
+    scale:
+      kind: ordinal
+      min: 0
+      max: 2
+      anchors:
+        "0": Wrong, missing, or generic text that would fit any paper.
+        "1": Partly right; misses the key point of the reference answer or adds an error.
+        "2": Matches the reference answer's key point, specific to this paper.
+  - id: raised_questions
+    name: Quality of questions raised
+    weight: 0.15
+    source: judge
+    scale:
+      kind: ordinal
+      min: 1
+      max: 3
+      anchors:
+        "1": Generic ("are there limitations?", "how does it scale?") — could be asked of any paper.
+        "2": Specific to this paper but obvious from reading the abstract.
+        "3": Specific and sharp — targets a real weak point or untested assumption a careful reader would care about.
+  - id: faithfulness
+    name: No hallucinated claims
+    weight: 0.20
+    source: judge
+    description: 1 minus a penalty per statement not supported by the paper.
+    scale: {kind: numeric, min: 0, max: 1}
+  - id: format
+    name: Follows requested structure
+    weight: 0.05
+    source: auto
+    scale: {kind: numeric, min: 0, max: 1}
+
+automatic_checks:
+  format: required section headings present
+  words: length recorded, flagged above max_words
+
+params:
+  required_sections: ["Summary", "Key claims", "Answers", "Questions I would raise"]
+  max_words: 1500
+  hallucination_penalty: 0.25
+
+judge:
+  system: >
+    You are a meticulous research assistant grading a paper digest written by another AI.
+    Judge only against the paper text and the reference material given. Be strict about
+    statements the paper does not support. Reply with JSON only.
+  prompt: |
+    # The paper
+    {{source}}
+
+    # Gold claims the reader expects the digest to contain
+    {{claims}}
+
+    # Prewritten questions with reference answers
+    {{questions}}
+
+    # The digest to grade
+    {{output}}
+
+    # Your task
+    1. For each gold claim, decide whether the digest states it: "covered", "partial"
+       (mentioned but missing a key qualifier or number), or "missing". Paraphrase counts.
+    2. Score each answer to Q1, Q2, ... on this scale:
+    {{answer_anchors}}
+    3. Rate the questions the digest raises on its own (section "Questions I would raise"):
+    {{raised_anchors}}
+    4. List every statement in the digest that the paper does NOT support (quote it briefly).
+       Reasonable paraphrase of the paper is supported; added numbers, results or claims
+       that are not in the paper are not.
+
+    Reply with exactly this JSON shape:
+    {"claims": [{"id": 1, "verdict": "covered"}],
+     "answers": [{"id": 1, "score": 2}],
+     "raised_questions_quality": 2,
+     "unsupported_claims": ["..."]}
+
+calibration:
+  sample_size: 20
+  min_kappa: 0.6
+  min_correlation: 0.6
