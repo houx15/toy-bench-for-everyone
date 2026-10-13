@@ -1,0 +1,33 @@
+# Demo kit — a fictional user, so the pipeline can be tried end to end.
+# Your real kit is produced by the setup interview (see SKILL.md) into my-kit/.
+kit_version: 0.1.0
+owner: Demo User
+created: 2026-10-13
+current_favorite: mock:steady-sonnet   # spec string of the model the radar compares against
+
+buckets:
+  - id: paper-reading
+    name: Paper reading
+    type: model-dependent
+    usage_share: 0.30
+    description: Digesting ML papers before group meeting.
+  - id: brainstorming
+    name: Brainstorming
+    type: model-dependent
+    usage_share: 0.20
+    description: Ideas for side projects, talks and posts.
+  - id: research-planning
+    name: Research planning
+    type: model-dependent
+    usage_share: 0.15
+    description: Follow-up experiments and ablations after reading results.
+  - id: coding
+    name: Coding
+    type: public-benchmark
+    usage_share: 0.25
+    description: Python tooling and small web apps. Covered by public scores for now.
+  - id: daily-digest
+    name: Daily AI digest
+    type: product-dependent
+    usage_share: 0.10
+    description: Depends on the app's search, not the model. Left out of the kit.

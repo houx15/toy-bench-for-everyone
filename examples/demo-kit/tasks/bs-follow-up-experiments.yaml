@@ -1,0 +1,21 @@
+id: bs-follow-up-experiments
+title: Follow-up experiments after a surprising ablation
+bucket: research-planning
+recipe: brainstorming
+source: "Recurring ask after reading results: 'what experiments should I run next?'"
+
+input:
+  prompt: |
+    In my agent-memory project, removing the notebook size cap made task completion drop
+    from 58% to 50%, even though the agent had more information available. Brainstorm
+    follow-up experiments that would explain why.
+
+gold:
+  goal: >
+    Experiments I can run within a week on my existing setup, each of which would clearly
+    support or rule out one explanation.
+  target_count: 8
+  baseline_ideas:
+    - Try several different cap sizes and plot completion
+    - Measure how long the notebooks get without the cap
+    - Run more random seeds

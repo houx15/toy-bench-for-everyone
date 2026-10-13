@@ -1,0 +1,35 @@
+id: pd-tidal-memory
+title: Digest "Tidal Memory" before group meeting
+bucket: paper-reading
+recipe: paper-digest
+source: "Pattern from history: 'summarize this paper, what's the trick, what would you ask the authors'"
+weight: 1.0
+
+input:
+  prompt: |
+    I'm presenting this paper at group meeting tomorrow. Give me a digest I can work from:
+    what they did, the key results with numbers, and what I should be skeptical about.
+  attachments: [paper.md]
+
+gold:
+  source_attachment: paper.md
+  claims:
+    - The working context is flushed every 40 turns and rebuilt from an agent-written notebook.
+    - "The notebook has three sections: goals, facts, and open threads."
+    - After a flush the agent keeps the last 5 turns verbatim.
+    - Task completion rises from 41% (truncation) to 58%.
+    - One-shot summarization reaches 49%, so the gain over it is 9 points.
+    - Tokens per turn drop by about 37%.
+    - The notebook is capped at 2,000 tokens; without the cap completion falls to 50%.
+    - Flush intervals of 20 and 80 turns performed worse than 40.
+    - Most of the gain comes from dependency-upgrade tasks; documentation gains are within seed variance.
+    - Only one base model was tested.
+  questions:
+    - question: Why might a fixed 40-turn schedule beat summarizing once when the window fills?
+      reference: >
+        Flushing regularly keeps the context small and forces the notebook to stay current,
+        rather than one lossy compression of a huge context at the end; it also cuts tokens.
+    - question: What is the weakest part of the evidence?
+      reference: >
+        One base model only, the interval tuned on a small held-out set, documentation gains
+        within noise and human-checked by the authors themselves; tasks under 400 turns.

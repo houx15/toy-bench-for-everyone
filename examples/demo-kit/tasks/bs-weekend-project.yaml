@@ -1,0 +1,20 @@
+id: bs-weekend-project
+title: Weekend project ideas around personal AI evaluation
+bucket: brainstorming
+recipe: brainstorming
+source: "Recurring ask: 'give me side project ideas I could build in a weekend'"
+
+input:
+  prompt: |
+    I'm a PhD student who uses AI assistants every day. Brainstorm weekend side projects
+    about measuring how well AI models work for one specific person.
+
+gold:
+  goal: >
+    Something I could build in one weekend, that I would personally keep using, and that
+    makes a good short blog post.
+  target_count: 10
+  baseline_ideas:
+    - A personal leaderboard website comparing models on my own prompts
+    - A browser extension that rates AI answers with thumbs up and down
+    - A spreadsheet tracking which model I used for which task
