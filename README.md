@@ -14,6 +14,14 @@ should do which job for you.
 It works with or without API keys: `openrouter:` and `bailian:` models are called directly,
 and `app:` models are handed to you as prompt files to paste into any chat app.
 
+## Start here
+
+Send this repository's link to an AI agent such as Codex or Claude Code and say:
+**"Set up my personal AI benchmark."** It follows [SKILL.md](SKILL.md): it learns what you
+use AI for, designs the benchmark with you, explains its reasoning in `DESIGN.md`, saves
+everything to **your own private GitHub repo**, and gives you `EXAM.md`, the one file you
+hand to the models you want to compare. That file has no answers in it.
+
 ## Try it offline
 
 ```bash

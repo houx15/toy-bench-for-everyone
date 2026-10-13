@@ -18,7 +18,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from scorer_kit.kit import REPO_ROOT, KitError, load_kit
+from scorer_kit.kit import DEMO_KIT, KitError, load_kit
 
 
 def _print_progress(run, label: str, progress) -> None:
@@ -132,7 +132,7 @@ def cmd_init(a) -> None:
     dest = Path(a.dest)
     if dest.exists():
         sys.exit(f"{dest} already exists; not overwriting")
-    shutil.copytree(REPO_ROOT / "examples" / "demo-kit", dest)
+    shutil.copytree(DEMO_KIT, dest)
     print(f"created {dest} from the demo kit — replace its tasks with your own (see SKILL.md)")
 
 

@@ -11,7 +11,15 @@ from pydantic import ValidationError
 from scorer_kit.schemas import Profile, Recipe, Task
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-BUILTIN_RECIPES = REPO_ROOT / "recipes"
+_PACKAGED = Path(__file__).resolve().parent / "_data"  # present in installed wheels only
+
+
+def _data_dir(name: str, in_repo: Path) -> Path:
+    return in_repo if in_repo.is_dir() else _PACKAGED / name
+
+
+BUILTIN_RECIPES = _data_dir("recipes", REPO_ROOT / "recipes")
+DEMO_KIT = _data_dir("demo-kit", REPO_ROOT / "examples" / "demo-kit")
 
 
 class KitError(Exception):

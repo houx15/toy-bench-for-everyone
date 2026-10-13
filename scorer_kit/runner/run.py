@@ -288,9 +288,12 @@ def write_handoff_index(run: Run) -> Path:
         "2. Paste the whole content of the `.prompt.md` file and send it.",
         "3. Paste the model's complete reply into the matching `.response.md` file next to it.",
         "",
-        "Then re-run the same `scorer` command; finished responses are picked up and only",
-        "missing ones are listed again. An AI app with file access can do steps 1-3 for you",
-        "if it can open fresh chats with the target model.",
+        "Then run `scorer resume` on this run folder; finished responses are picked up and",
+        "only missing ones are listed again. An AI app with file access can do steps 1-3 for",
+        "you if it can open fresh chats with the target model.",
+        "",
+        "Shortcut for task prompts: send the whole `scorer exam` file in one chat per repeat",
+        "instead, then `scorer ingest <run> <reply file> -m <app model> -r <repeat>`.",
         "",
     ]
     for model_dir in sorted(p for p in run.handoff_dir.iterdir() if p.is_dir()):

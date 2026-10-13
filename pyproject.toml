@@ -25,5 +25,11 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["scorer_kit"]
 
+# recipes/ and the demo kit live at the repo root for readability; ship them inside the
+# package so `uvx --from git+...` installs work outside a clone
+[tool.hatch.build.targets.wheel.force-include]
+"recipes" = "scorer_kit/_data/recipes"
+"examples/demo-kit" = "scorer_kit/_data/demo-kit"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
